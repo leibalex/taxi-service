@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
-export class Client {
+export class Driver {
   @PrimaryGeneratedColumn("uuid")
   public id: string;
 }
