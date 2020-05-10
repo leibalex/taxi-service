@@ -5,6 +5,30 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    env_file:
+      - ./environments
     ports:
       - "3000:3000"
     command: ["node", "dist/main.js"]
+    working_dir: /usr/src/app
+    depends_on:
+      - postgresql
+
+  postgresql:
+    container_name: taxi-service-db
+    image: postgres:11
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=postgres_pass
+      - POSTGRES_DB=taxi
+
+  init-db:
+    container_name: init-db
+    build:
+      context: .
+      dockerfile: migrations.Dockerfile
+    env_file:
+      - ./environments
+    command: ["npm", "run", "migration:run"]

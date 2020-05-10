@@ -18,17 +18,24 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "migration:generate": "./node_modules/.bin/ts-node --project ./tsconfig.json -r tsconfig-paths/register ./node_modules/typeorm/cli.js -f ./ormconfig.js migration:generate -n",
+    "migration:run": "./node_modules/.bin/ts-node --project ./tsconfig.json -r tsconfig-paths/register ./node_modules/typeorm/cli.js -f ./ormconfig.js migration:run"
   },
   "dependencies": {
     "@nestjs/common": "^7.0.0",
     "@nestjs/core": "^7.0.0",
     "@nestjs/platform-express": "^7.0.0",
+    "@nestjs/typeorm": "^7.0.0",
+    "ajv": "^6.12.2",
+    "dotenv": "^8.2.0",
+    "pg": "^8.1.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^6.5.4",
     "tslint": "^6.1.2",
-    "tslint-consistent-codestyle": "^1.16.0"
+    "tslint-consistent-codestyle": "^1.16.0",
+    "typeorm": "^0.2.24"
   },
   "devDependencies": {
     "@nestjs/cli": "^7.0.0",

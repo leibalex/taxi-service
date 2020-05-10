@@ -1,0 +1,4 @@
+DB_LOGGING=true
+NODE_ENV=development
+APP_VERSION=1.0.0
+DB_URL=postgres://postgres:postgres_pass@postgresql:5432/taxi
