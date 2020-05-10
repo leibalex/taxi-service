@@ -1,10 +1,10 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, JoinColumn } from "typeorm";
 import { Driver } from "./driver.entity";
 import { Client } from "./client.entity";
-import { OrderStatusEnum } from "../modules/order/types";
+import { IOrder, OrderStatusEnum } from "../types";
 
 @Entity()
-export class Order {
+export class Order implements IOrder {
 
   @PrimaryGeneratedColumn()
   public id: string;
