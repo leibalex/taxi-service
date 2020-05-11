@@ -14,6 +14,14 @@ export class ClientService {
   ) {}
 
   public async getClient(id: string): Promise<IClient> {
-    return await this._clientRepository.findOne(id);
+    const client = await this._clientRepository.createQueryBuilder("client")
+      .leftJoinAndSelect("client.orders", "order", "order.status != 'finish'")
+      .where("client.id = :id", { id })
+      .getOne();
+    console.dir(client);
+    if (client?.orders?.length) {
+      return null;
+    }
+    return client;
   }
 }
