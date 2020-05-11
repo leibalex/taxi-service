@@ -28,7 +28,7 @@ export class ConfigService {
   }
 
   public get serverPort(): number {
-    return Number(this._envConfig["SERVER_PORT"]) || 3008;
+    return Number(this._envConfig["SERVER_PORT"]) || 3000;
   }
 
   public get dbURL(): string {
