@@ -6,7 +6,7 @@ import { IOrder, OrderStatusEnum } from "../types";
 @Entity()
 export class Order implements IOrder {
 
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn("uuid")
   public id: string;
 
   @Column({ type: "text" })
