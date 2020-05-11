@@ -3,6 +3,8 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { Order } from "../../entities";
 import { DriverModule } from "../driver/driver.module";
 import { ClientModule } from "../client/client.module";
+import { OrderController } from "./order.controller";
+import { OrderService } from "./order.service";
 
 
 @Module({
@@ -10,7 +12,9 @@ import { ClientModule } from "../client/client.module";
     TypeOrmModule.forFeature([Order]),
     DriverModule,
     ClientModule
-  ]
+  ],
+  providers: [OrderService],
+  controllers: [OrderController]
 })
 export class OrderModule {
 

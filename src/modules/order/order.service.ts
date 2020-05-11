@@ -1,10 +1,11 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Order } from "../../entities";
-import { Repository } from "typeorm";
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectConnection, InjectRepository } from '@nestjs/typeorm';
+import { Order } from '../../entities';
+import { Connection, Repository } from 'typeorm';
 import { IOrderCreate, OrderStatusEnum } from '../../types/order-types';
-import { ClientService } from "../client/client.service";
-import { DriverService } from "../driver/driver.service";
+import { ClientService } from '../client/client.service';
+import { DriverService } from '../driver/driver.service';
+import { DriverStatusEnum } from '../../types/driver-types';
 
 
 @Injectable()
@@ -14,10 +15,12 @@ export class OrderService {
     @InjectRepository(Order)
     private readonly _orderRepository: Repository<Order>,
     private readonly _clientService: ClientService,
-    private readonly _driverService: DriverService
+    private readonly _driverService: DriverService,
+    @InjectConnection()
+    private readonly _connection: Connection,
   ) {}
 
-  public async createOrder(payload: IOrderCreate): Promise<any> {
+  public async createOrder(payload: IOrderCreate): Promise<void> {
     const { clientId, ...rest } = payload;
 
     const driver = await this._driverService.getFreeDriver();
@@ -39,7 +42,10 @@ export class OrderService {
       status: OrderStatusEnum.new
     });
 
-    await this._orderRepository.insert(newOrder);
+    await this._connection.transaction(async (transactionalEntityManager) => {
+      await transactionalEntityManager.insert(Order, newOrder);
+      await this._driverService.updateDriverStatus(driver, DriverStatusEnum.busy, transactionalEntityManager);
+    });
   }
 
   public async startTrip(orderId: string): Promise<void> {
@@ -59,18 +65,21 @@ export class OrderService {
   }
 
   public async finishTrip(orderId: string): Promise<void> {
-    const order = await this._orderRepository.findOne(orderId, {
-      where: {
-        status: OrderStatusEnum.inWay
-      }
-    });
+
+    const order = await this._orderRepository.createQueryBuilder("order")
+      .innerJoinAndSelect("order.driver", "driver")
+      .where("order.id = :id", { id: orderId })
+      .andWhere("order.status = :status", { status: OrderStatusEnum.inWay })
+      .getOne();
+
 
     if (!order) {
       throw new NotFoundException(`Cannot finish order, appropriate order with id: [${orderId}] not found`);
     }
 
-    await this._orderRepository.update(orderId, {
-      status: OrderStatusEnum.finish
+    await this._connection.transaction(async (transactionalEntityManager) => {
+      await transactionalEntityManager.update(Order, orderId, { status: OrderStatusEnum.finish });
+      await this._driverService.updateDriverStatus(order.driver, DriverStatusEnum.free, transactionalEntityManager);
     });
   }
 }
