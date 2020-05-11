@@ -4,6 +4,7 @@ import { IOrderCreate } from "../../types/order-types";
 import { ApiBody, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { CreateOrderDto } from "./dto/create.order.dto";
 import { OrderIdDto } from "./dto/orderId.dto";
+import { IBaseResponse } from "../../types";
 
 
 @ApiTags("Orders")
@@ -15,18 +16,21 @@ export class OrderController {
   ) {}
 
   @ApiOperation({
-    summary: ""
+    summary: "Создать новый заказ"
   })
   @ApiBody({
     type: CreateOrderDto
   })
   @Post("")
-  public async create(@Body() payload: IOrderCreate): Promise<void> {
-    return await this._orderService.createOrder(payload);
+  public async create(@Body() payload: IOrderCreate): Promise<IBaseResponse> {
+    return {
+      statusCode: 0,
+      data: await this._orderService.createOrder(payload)
+    };
   }
 
   @ApiOperation({
-    summary: ""
+    summary: "Старт поездки"
   })
   @ApiBody({
     type: OrderIdDto
@@ -37,7 +41,7 @@ export class OrderController {
   }
 
   @ApiOperation({
-    summary: ""
+    summary: "Завершение поездки"
   })
   @ApiBody({
     type: OrderIdDto

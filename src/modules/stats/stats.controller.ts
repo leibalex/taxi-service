@@ -31,6 +31,12 @@ export class StatsController {
   @ApiOperation({
     summary: "На какую сумму отвез"
   })
+  @ApiParam({
+    description: "Идентификатор таксиста",
+    type: String,
+    name: "id",
+    example: "8d55efba-211d-4e70-bfd7-0f395244c113"
+  })
   @Get("complete-orders-sum")
   public async getSum(@Param("id") id: string): Promise<IBaseResponse> {
     return {
@@ -42,6 +48,12 @@ export class StatsController {
   @ApiOperation({
     summary: "Сколько выполнил заказов"
   })
+  @ApiParam({
+    description: "Идентификатор таксиста",
+    type: String,
+    name: "id",
+    example: "8d55efba-211d-4e70-bfd7-0f395244c113"
+  })
   @Get("complete-orders-count")
   public async getCount(@Param("id") id: string): Promise<IBaseResponse> {
     return {
@@ -52,6 +64,12 @@ export class StatsController {
 
   @ApiOperation({
     summary: "Среднее время поездки"
+  })
+  @ApiParam({
+    description: "Идентификатор таксиста",
+    type: String,
+    name: "id",
+    example: "8d55efba-211d-4e70-bfd7-0f395244c113"
   })
   @Get("average-time")
   public async getAverageCount(@Param("id") id: string): Promise<IBaseResponse> {

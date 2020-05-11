@@ -20,7 +20,12 @@ export class OrderService {
     private readonly _connection: Connection,
   ) {}
 
-  public async createOrder(payload: IOrderCreate): Promise<void> {
+  /**
+   * Create new order
+   * @param payload - data for new order
+   * @return created order id
+   */
+  public async createOrder(payload: IOrderCreate): Promise<string> {
     const { clientId, ...rest } = payload;
 
     const driver = await this._driverService.getFreeDriver();
@@ -42,10 +47,15 @@ export class OrderService {
       status: OrderStatusEnum.new
     });
 
+    let createdOrderId = null;
+
     await this._connection.transaction(async (transactionalEntityManager) => {
-      await transactionalEntityManager.insert(Order, newOrder);
+      const { identifiers } = await transactionalEntityManager.insert(Order, newOrder);
+      createdOrderId = identifiers[0];
       await this._driverService.updateDriverStatus(driver, DriverStatusEnum.busy, transactionalEntityManager);
     });
+
+    return createdOrderId;
   }
 
   public async startTrip(orderId: string): Promise<void> {

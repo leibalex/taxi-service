@@ -13,12 +13,17 @@ export class ClientService {
     private readonly _clientRepository: Repository<Client>
   ) {}
 
+  /**
+   * Not in active trip client
+   * @param id - unique client id
+   * return client
+   */
   public async getClient(id: string): Promise<IClient> {
     const client = await this._clientRepository.createQueryBuilder("client")
       .leftJoinAndSelect("client.orders", "order", "order.status != 'finish'")
       .where("client.id = :id", { id })
       .getOne();
-    console.dir(client);
+
     if (client?.orders?.length) {
       return null;
     }
