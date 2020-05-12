@@ -25,7 +25,7 @@ export class OrderService {
    * @param payload - data for new order
    * @return created order id
    */
-  public async createOrder(payload: IOrderCreate): Promise<string> {
+  public async createOrder(payload: IOrderCreate): Promise<Record<any, any>> {
     const { clientId, ...rest } = payload;
 
     const driver = await this._driverService.getFreeDriver();
@@ -55,7 +55,10 @@ export class OrderService {
       await this._driverService.updateDriverStatus(driver, DriverStatusEnum.busy, transactionalEntityManager);
     });
 
-    return createdOrderId;
+    return {
+      createdOrder: createdOrderId,
+      driverId: driver.id
+    };
   }
 
   public async startTrip(orderId: string): Promise<void> {
