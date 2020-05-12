@@ -15,11 +15,11 @@ $ npm install
 
 ```bash
 $ docker-compose up taxi-service
-$ docker-compose up init-db
+$ docker-compose up init-db (xтобы прокрутить миграции)
 ```
 
 ## How to test
 ```bash
-$ use swagger -> http://localhost:3000/api/swagger-docs
+$ use swagger -> http://localhost:3000/api/swagger-docs (документация и поклацать)
 ```
 
