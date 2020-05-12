@@ -15,7 +15,7 @@ $ npm install
 
 ```bash
 $ docker-compose up taxi-service
-$ docker-compose up init-db (xтобы прокрутить миграции)
+$ docker-compose up init-db (чтобы прокрутить миграции)
 ```
 
 ## How to test
